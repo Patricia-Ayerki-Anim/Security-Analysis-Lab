@@ -1,0 +1,3 @@
+index=sysmon EventCode=13
+| stats count by TargetObject, image
+| sort -count
