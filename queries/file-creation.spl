@@ -1,0 +1,3 @@
+index=sysmon EventCode=11
+|stats count by TargetFilename, Image, 
+| sort -count
