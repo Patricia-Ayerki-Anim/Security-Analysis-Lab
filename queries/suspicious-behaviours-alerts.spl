@@ -1,0 +1,10 @@
+index=sysmon EventCode=1
+| eval suspicious=if(
+   like(CommandLine,"%encodedcommand%") OR
+   like(Image,"%rundll32%") OR
+   like(Image,"%mshta%") OR
+   like(Image,"%powershell.exe%") OR
+   like(CommandLine,"% -enc %"),
+   "YES", "NO")
+   | search suspicious="YES"
+   | table _time, Image, ParentImage, CommandLine
