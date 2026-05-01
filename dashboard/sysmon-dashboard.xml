@@ -1,0 +1,104 @@
+<dashboard version="1.1" theme="light">
+  <label>Sysmon Security Dashboard</label>
+  <description>This dashboard provides a high-level telemetry collected from Sysmon.  it  visualizes key security events including process creation, file modifications, network connection activities, registry changes and suspicious behaviour and potential threats.</description>
+  <row>
+    <panel>
+      <title>Process Creation Overview</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=1 | stats count by ParentImage, Image, CommandLine | sort - count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Network Connections</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=3 | stats count by DestinationIp, DestinationPort, Image | sort - count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Registry Modifications</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=13 | stats count by TargetObject,Image | sort - count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>File Creation Activity</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=11 | stats count by TargetFilename,Image | sort - count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Suspicious Activity Alerts</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=1 | eval suspicious=if( like(CommandLine, "%encodedcommand%") OR like(Image,"%rundll32%") OR like(Image,"%mshta%") OR like(Image,"%powershell.exe2%") OR like(CommandLine,"% -enc %"),"YES", "NO") | search suspicious = "YES" | table _time, Image, ParentImage, CommandLine</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
